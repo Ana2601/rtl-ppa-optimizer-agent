@@ -1,0 +1,65 @@
+{
+  "model": "claude (interactive, during development)",
+  "note": "Proposals only. Every verdict is recomputed by the tools on replay.",
+  "steps": [
+    {
+      "text": "ADD, SUB, SLT and SLTU each imply an adder or comparator. One 33-bit adder computing a + (b ^ sub) + sub can serve all four: the borrow gives SLTU, and the sign corrected for overflow gives SLT.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "One shared 33-bit adder/subtractor for ADD/SUB/SLT/SLTU; flags from carry and sign.",
+        "rtl_file": "01_shared_adder.sv"}}]
+    },
+    {
+      "text": "-14 % area but +37 % delay, over the 5 % budget: op now gates b through an XOR in front of the carry chain. Smaller, delay-neutral ideas first: SEQ can reuse the XOR that op XOR already computes.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "Compute a == b as ~|(a ^ b), sharing the XOR array with the XOR op.",
+        "rtl_file": "02_eq_from_xor.sv"}}]
+    },
+    {
+      "text": "No gain: synthesis already shares that. Next: keep ADD on its own adder (off the op-decode path) but share one subtractor between SUB, SLT and SLTU.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "Dedicated adder for ADD; one 33-bit subtractor shared by SUB, SLT, SLTU.",
+        "rtl_file": "03_shared_subtractor.sv"}}]
+    },
+    {
+      "text": "No gain again: alumacc already merges < with - on the same operands. The baseline is better than it looks. Back to the shared adder: maybe the +sub carry-in became a separate incrementer. Folding it into a 2-operand add as {a,1} + {b',sub} gives one adder.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "Shared adder with the carry-in folded in: {1'b0,a,1'b1} + {1'b0,b^sub,sub}.",
+        "rtl_file": "04_shared_adder_carry_in_trick.sv"}}]
+    },
+    {
+      "text": "Lint: bit 0 of the wide sum is unused. Marking it as intentionally unused.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "Same as previous, with t[0] explicitly consumed by an unused_ signal.",
+        "rtl_file": "05_carry_in_trick_lint_clean.sv"}}]
+    },
+    {
+      "text": "Smallest yet (-17 %) but even slower (+58 %): ABC maps a ripple chain. To trade some of that area back for speed, try a carry-select adder: the upper half computed for both carry-ins in parallel.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "Shared adder/subtractor as a 2 x 16-bit carry-select adder.",
+        "rtl_file": "06_shared_carry_select_adder.sv"}}]
+    },
+    {
+      "text": "+18 % delay at -9 % area: better, but still 3x the budget. Finer blocks (4 x 8-bit) shorten the ripple further.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "Shared adder/subtractor as a 4 x 8-bit carry-select adder.",
+        "rtl_file": "07_carry_select_8bit_blocks.sv"}}]
+    },
+    {
+      "text": "Lint: the block-carry loop reads c[] before it is written in the same always_comb. Writing the carries out as explicit assigns.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "Same 4 x 8-bit carry-select, with the block carries as explicit assigns.",
+        "rtl_file": "08_carry_select_lint_clean.sv"}}]
+    },
+    {
+      "text": "Lint: c[0] is now unused. Dropping it.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "Same as previous, without the unused c[0].",
+        "rtl_file": "09_carry_select_final.sv"}}]
+    },
+    {
+      "text": "+20 % delay: finer blocks did not help, so the delay is not just the ripple; the op decode and the XOR in front of the adder cost it too. Under a 5 % delay budget the original is the best design.",
+      "tool_calls": [{"name": "finish", "input": {
+        "summary": "No candidate met the 5 % delay budget, so the original stands. Yosys already shares the compare logic with the subtractor and the equality with the XOR. Sharing ADD and SUB in one adder buys area at a large delay cost; Pareto points measured: -9 % area at +18 % delay (16-bit carry-select), -14 % at +37 %, -17 % at +58 %."}}]
+    }
+  ]
+}

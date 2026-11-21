@@ -1,0 +1,6 @@
+build/
+results/*/work/
+results_live/
+__pycache__/
+*.pyc
+obj_dir/

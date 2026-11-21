@@ -1,0 +1,221 @@
+{
+  "pareto": [
+    {
+      "n": 5,
+      "area_um2": 10253.58,
+      "delay_ps": 4630.4
+    }
+  ],
+  "bench": "fir8_sym",
+  "objective": "area",
+  "baseline": {
+    "area_um2": 15914.01,
+    "cells": 1911,
+    "flops": 122,
+    "delay_ps": 6477.8,
+    "cell_mix": {
+      "xnor2_1": 449,
+      "xor2_1": 241,
+      "nand2_1": 225,
+      "nor2_1": 163,
+      "maj3_1": 125,
+      "dfrtp_1": 122,
+      "mux2_2": 81,
+      "a21oi_1": 74,
+      "o21ai_0": 73,
+      "inv_1": 53,
+      "nand2b_1": 51,
+      "nor2b_1": 47
+    }
+  },
+  "best": {
+    "area_um2": 10253.58,
+    "cells": 872,
+    "flops": 162,
+    "delay_ps": 4630.4,
+    "cell_mix": {
+      "xnor2_1": 260,
+      "edfxtp_1": 156,
+      "maj3_1": 106,
+      "xor2_1": 84,
+      "nor2_1": 60,
+      "nand2_1": 47,
+      "a21oi_1": 28,
+      "inv_1": 24,
+      "o21ai_0": 18,
+      "nor2b_1": 15,
+      "and2_0": 8,
+      "and2_1": 7
+    }
+  },
+  "best_attempt": 5,
+  "best_lec": "PROVEN",
+  "improvement_%": 35.6,
+  "attempts": [
+    {
+      "n": 1,
+      "rationale": "Fold symmetric taps (4 multipliers behind pre-adders) and drop the reset from the delay line and y; control registers keep their reset.",
+      "verdict": "constraint",
+      "gates": {
+        "interface": "PASS",
+        "lint": "PASS",
+        "sim": "PASS",
+        "lec": "PASS PROVEN"
+      },
+      "ppa": {
+        "area_um2": 11033.08,
+        "cells": 1174,
+        "flops": 122,
+        "delay_ps": 7308.9,
+        "cell_mix": {
+          "xnor2_1": 264,
+          "xor2_1": 162,
+          "nor2_1": 137,
+          "edfxtp_1": 116,
+          "nand2_1": 102,
+          "maj3_1": 75,
+          "a21oi_1": 46,
+          "o21ai_0": 43,
+          "nand2b_1": 27,
+          "inv_1": 24,
+          "nor2b_1": 23,
+          "maj3_2": 13
+        }
+      },
+      "seconds": 23.2
+    },
+    {
+      "n": 2,
+      "rationale": "Only remove the reset from the datapath registers (delay line, y); keep the direct-form multipliers.",
+      "verdict": "accepted",
+      "gates": {
+        "interface": "PASS",
+        "lint": "PASS",
+        "sim": "PASS",
+        "lec": "PASS PROVEN"
+      },
+      "ppa": {
+        "area_um2": 15282.16,
+        "cells": 1791,
+        "flops": 122,
+        "delay_ps": 6425.8,
+        "cell_mix": {
+          "xnor2_1": 464,
+          "xor2_1": 236,
+          "nand2_1": 207,
+          "nor2_1": 169,
+          "maj3_1": 130,
+          "edfxtp_1": 116,
+          "inv_1": 67,
+          "o21ai_0": 67,
+          "a21oi_1": 54,
+          "nand2b_1": 52,
+          "nor2b_1": 43,
+          "nand3_1": 29
+        }
+      },
+      "seconds": 12.6
+    },
+    {
+      "n": 3,
+      "rationale": "Fold the taps and sum the 4 products as (p0+p1)+(p2+p3) to recover the pre-adder delay.",
+      "verdict": "constraint",
+      "gates": {
+        "interface": "PASS",
+        "lint": "PASS",
+        "sim": "PASS",
+        "lec": "PASS PROVEN"
+      },
+      "ppa": {
+        "area_um2": 11000.55,
+        "cells": 1119,
+        "flops": 122,
+        "delay_ps": 7676.1,
+        "cell_mix": {
+          "xnor2_1": 284,
+          "xor2_1": 167,
+          "edfxtp_1": 116,
+          "nor2_1": 111,
+          "maj3_1": 85,
+          "nand2_1": 79,
+          "a21oi_1": 42,
+          "inv_1": 31,
+          "nand2b_1": 30,
+          "o21ai_0": 26,
+          "maj3_2": 21,
+          "nor2b_1": 13
+        }
+      },
+      "seconds": 23.5
+    },
+    {
+      "n": 4,
+      "rationale": "Fold the taps with the pre-adders retimed into registers (sums computed from the current delay line for the next cycle); tap[7] disappears. Datapath stays reset-free.",
+      "verdict": "accepted",
+      "gates": {
+        "interface": "PASS",
+        "lint": "PASS",
+        "sim": "PASS",
+        "lec": "PASS PROVEN"
+      },
+      "ppa": {
+        "area_um2": 12174.18,
+        "cells": 1204,
+        "flops": 162,
+        "delay_ps": 5584.2,
+        "cell_mix": {
+          "xnor2_1": 312,
+          "edfxtp_1": 156,
+          "nand2_1": 124,
+          "nor2_1": 118,
+          "xor2_1": 113,
+          "maj3_1": 95,
+          "a21oi_1": 38,
+          "o21ai_0": 37,
+          "nand2b_1": 28,
+          "nand3_1": 27,
+          "inv_1": 20,
+          "nor2b_1": 17
+        }
+      },
+      "seconds": 31.1
+    },
+    {
+      "n": 5,
+      "rationale": "Write the constant multiplies as canonical-signed-digit shift-adds: 3=2+1, -11=-16+4+1, 25=16+8+1, 47=32+16-1.",
+      "verdict": "accepted",
+      "gates": {
+        "interface": "PASS",
+        "lint": "PASS",
+        "sim": "PASS",
+        "lec": "PASS PROVEN"
+      },
+      "ppa": {
+        "area_um2": 10253.58,
+        "cells": 872,
+        "flops": 162,
+        "delay_ps": 4630.4,
+        "cell_mix": {
+          "xnor2_1": 260,
+          "edfxtp_1": 156,
+          "maj3_1": 106,
+          "xor2_1": 84,
+          "nor2_1": 60,
+          "nand2_1": 47,
+          "a21oi_1": 28,
+          "inv_1": 24,
+          "o21ai_0": 18,
+          "nor2b_1": 15,
+          "and2_0": 8,
+          "and2_1": 7
+        }
+      },
+      "seconds": 33.3
+    }
+  ],
+  "summary": "Three transforms stacked: (1) no reset on datapath registers whose contents are don't-care until the fill counter (which keeps its reset) raises out_valid; (2) symmetric-tap folding with the pre-adders retimed into registers, which removes 4 multipliers without adding delay; (3) CSD shift-adds for the constant multiplies. A balanced adder tree did nothing: Yosys rebuilds the sum itself.",
+  "tools": {
+    "yosys": "Yosys 0.68+post (git sha1 c12172fbae8af5e20f6fb52e3d4e92d56ed587b6, Release, AppleClang clang++ 21.0.0.21000101)",
+    "verilator": "Verilator 5.050 2026-07-01 rev vUNKNOWN-built20260701"
+  }
+}

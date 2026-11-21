@@ -1,0 +1,209 @@
+{
+  "pareto": [
+    {
+      "n": 0,
+      "area_um2": 3851.19,
+      "delay_ps": 10073.8
+    },
+    {
+      "n": 1,
+      "area_um2": 4016.35,
+      "delay_ps": 4562.5
+    },
+    {
+      "n": 3,
+      "area_um2": 4769.57,
+      "delay_ps": 3909.5
+    },
+    {
+      "n": 4,
+      "area_um2": 4810.86,
+      "delay_ps": 3514.1
+    },
+    {
+      "n": 2,
+      "area_um2": 7682.37,
+      "delay_ps": 3004.9
+    }
+  ],
+  "bench": "argmax8",
+  "objective": "delay",
+  "baseline": {
+    "area_um2": 3851.19,
+    "cells": 598,
+    "flops": 20,
+    "delay_ps": 10073.8,
+    "cell_mix": {
+      "nand2_1": 90,
+      "nor2_1": 84,
+      "o21ai_1": 66,
+      "a21oi_1": 45,
+      "o21ai_0": 26,
+      "a22o_1": 21,
+      "a21o_1": 20,
+      "dfrtp_1": 20,
+      "inv_1": 16,
+      "mux2i_1": 16,
+      "nor3_1": 15,
+      "o22ai_1": 14
+    }
+  },
+  "best": {
+    "area_um2": 4016.35,
+    "cells": 614,
+    "flops": 20,
+    "delay_ps": 4562.5,
+    "cell_mix": {
+      "inv_1": 78,
+      "nand2_1": 66,
+      "nor2_1": 64,
+      "o21ai_0": 58,
+      "a21oi_1": 49,
+      "mux2i_1": 33,
+      "o22ai_1": 25,
+      "dfrtp_1": 20,
+      "nor2b_1": 20,
+      "o211ai_1": 20,
+      "a22oi_1": 15,
+      "xor2_1": 13
+    }
+  },
+  "best_attempt": 1,
+  "best_lec": "PROVEN",
+  "improvement_%": 54.7,
+  "attempts": [
+    {
+      "n": 1,
+      "rationale": "Tournament tree (3 comparator levels) instead of a 7-step linear scan; the right side wins only when strictly greater.",
+      "verdict": "accepted",
+      "gates": {
+        "interface": "PASS",
+        "lint": "PASS",
+        "sim": "PASS",
+        "lec": "PASS PROVEN"
+      },
+      "ppa": {
+        "area_um2": 4016.35,
+        "cells": 614,
+        "flops": 20,
+        "delay_ps": 4562.5,
+        "cell_mix": {
+          "inv_1": 78,
+          "nand2_1": 66,
+          "nor2_1": 64,
+          "o21ai_0": 58,
+          "a21oi_1": 49,
+          "mux2i_1": 33,
+          "o22ai_1": 25,
+          "dfrtp_1": 20,
+          "nor2b_1": 20,
+          "o211ai_1": 20,
+          "a22oi_1": 15,
+          "xor2_1": 13
+        }
+      },
+      "seconds": 981.5
+    },
+    {
+      "n": 2,
+      "rationale": "All-pairs comparison: lane i wins if >= every lower lane and > every higher lane; one-hot AND-OR output mux.",
+      "verdict": "constraint",
+      "gates": {
+        "interface": "PASS",
+        "lint": "PASS",
+        "sim": "PASS",
+        "lec": "PASS PROVEN"
+      },
+      "ppa": {
+        "area_um2": 7682.37,
+        "cells": 1230,
+        "flops": 20,
+        "delay_ps": 3004.9,
+        "cell_mix": {
+          "o22ai_1": 173,
+          "nand2_1": 149,
+          "nor2_1": 130,
+          "inv_1": 101,
+          "a21oi_1": 100,
+          "o21ai_0": 79,
+          "a22oi_1": 46,
+          "o221ai_1": 39,
+          "a222oi_1": 36,
+          "a221oi_1": 28,
+          "a31oi_1": 25,
+          "maj3_1": 23
+        }
+      },
+      "seconds": 290.1
+    },
+    {
+      "n": 3,
+      "rationale": "Hybrid: pairwise level, then all-pairs over the 4 survivors.",
+      "verdict": "constraint",
+      "gates": {
+        "interface": "PASS",
+        "lint": "PASS",
+        "sim": "PASS",
+        "lec": "PASS PROVEN"
+      },
+      "ppa": {
+        "area_um2": 4769.57,
+        "cells": 731,
+        "flops": 20,
+        "delay_ps": 3909.5,
+        "cell_mix": {
+          "nor2_1": 85,
+          "nand2_1": 81,
+          "a21oi_1": 64,
+          "inv_1": 56,
+          "o21ai_0": 39,
+          "o22ai_1": 33,
+          "nand2b_1": 28,
+          "mux2i_1": 21,
+          "dfrtp_1": 20,
+          "o21ai_1": 18,
+          "o221ai_1": 17,
+          "a221oi_1": 16
+        }
+      },
+      "seconds": 10.8
+    },
+    {
+      "n": 4,
+      "rationale": "Hybrid with exactly one comparator per survivor pair; the opposite relation is its negation.",
+      "verdict": "constraint",
+      "gates": {
+        "interface": "PASS",
+        "lint": "PASS",
+        "sim": "PASS",
+        "lec": "PASS PROVEN"
+      },
+      "ppa": {
+        "area_um2": 4810.86,
+        "cells": 733,
+        "flops": 20,
+        "delay_ps": 3514.1,
+        "cell_mix": {
+          "nor2_1": 89,
+          "nand2_1": 69,
+          "a21oi_1": 65,
+          "inv_1": 64,
+          "o21ai_0": 54,
+          "o22ai_1": 31,
+          "mux2i_1": 23,
+          "nand2b_1": 23,
+          "a22oi_1": 20,
+          "dfrtp_1": 20,
+          "nor2b_1": 20,
+          "xnor2_1": 19
+        }
+      },
+      "seconds": 7.8
+    }
+  ],
+  "summary": "Tournament tree: -55 % delay at +4 % area, proven equivalent. Faster structures exist (all-pairs: -70 % delay; hybrid: -61 % to -65 %), but they need 1.24x to 2x the area, outside the spec's 1.2x budget. They are on the Pareto front if the budget changes.",
+  "tools": {
+    "yosys": "Yosys 0.68+post (git sha1 c12172fbae8af5e20f6fb52e3d4e92d56ed587b6, Release, AppleClang clang++ 21.0.0.21000101)",
+    "verilator": "Verilator 5.050 2026-07-01 rev vUNKNOWN-built20260701"
+  }
+}

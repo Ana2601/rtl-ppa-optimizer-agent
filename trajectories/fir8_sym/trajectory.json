@@ -1,0 +1,41 @@
+{
+  "model": "claude (interactive, during development)",
+  "note": "Proposals only. Every verdict is recomputed by the tools on replay.",
+  "steps": [
+    {
+      "text": "The coefficients are symmetric (h[k] == h[7-k]), so 8 multipliers can become 4 behind pre-adders. The spec also makes y don't-care until 8 samples have arrived, so the delay line and y do not need a reset; seen/in_valid_q/out_valid keep theirs. Trying both at once first.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "Fold symmetric taps (4 multipliers behind pre-adders) and drop the reset from the delay line and y; control registers keep their reset.",
+        "rtl_file": "01_fold_and_drop_datapath_reset.sv"}}]
+    },
+    {
+      "text": "Area fell ~31 % but delay rose ~13 %, over the 10 % budget: the pre-adder sits in front of the multipliers. Splitting the two ideas to see what each is worth. Reset removal alone should not touch timing.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "Only remove the reset from the datapath registers (delay line, y); keep the direct-form multipliers.",
+        "rtl_file": "02_drop_datapath_reset_only.sv"}}]
+    },
+    {
+      "text": "Reset removal is a clean ~4 % win and is the new base. For folding, the extra delay is one adder; summing the four products as a balanced tree might hide it.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "Fold the taps and sum the 4 products as (p0+p1)+(p2+p3) to recover the pre-adder delay.",
+        "rtl_file": "03_fold_balanced_tree.sv"}}]
+    },
+    {
+      "text": "The tree made no difference (Yosys merges the sum into one $macc and ignores the parentheses), so the pre-adder itself must leave the critical path. Every mirrored pair's next value is known one cycle early (x+t6, t0+t5, t1+t4, t2+t3), so the sums can be registered: retiming across the delay line. tap[7] is then never read.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "Fold the taps with the pre-adders retimed into registers (sums computed from the current delay line for the next cycle); tap[7] disappears. Datapath stays reset-free.",
+        "rtl_file": "04_fold_retimed_preadders.sv"}}]
+    },
+    {
+      "text": "Accepted: -23 % area and faster than the original. The four constant multiplies are now the bulk of the logic. Checking whether explicit CSD shift-adds beat Yosys's handling of signed constant multiplication.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "Write the constant multiplies as canonical-signed-digit shift-adds: 3=2+1, -11=-16+4+1, 25=16+8+1, 47=32+16-1.",
+        "rtl_file": "05_csd_shift_add.sv"}}]
+    },
+    {
+      "text": "CSD gave another ~16 % area and ~17 % delay: Yosys did not reach that form by itself. I have no further idea I expect to gain 0.5 %.",
+      "tool_calls": [{"name": "finish", "input": {
+        "summary": "Three transforms stacked: (1) no reset on datapath registers whose contents are don't-care until the fill counter (which keeps its reset) raises out_valid; (2) symmetric-tap folding with the pre-adders retimed into registers, which removes 4 multipliers without adding delay; (3) CSD shift-adds for the constant multiplies. A balanced adder tree did nothing: Yosys rebuilds the sum itself."}}]
+    }
+  ]
+}

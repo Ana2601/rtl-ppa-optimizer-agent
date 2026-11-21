@@ -1,0 +1,35 @@
+{
+  "model": "claude (interactive, during development)",
+  "note": "Proposals only. Every verdict is recomputed by the tools on replay.",
+  "steps": [
+    {
+      "text": "The linear scan is a 7-deep chain of compare-then-mux. A tournament tree is 3 levels. To keep 'ties go to the lowest index', the higher-index side may win only when strictly greater.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "Tournament tree (3 comparator levels) instead of a 7-step linear scan; the right side wins only when strictly greater.",
+        "rtl_file": "01_tournament_tree.sv"}}]
+    },
+    {
+      "text": "Accepted, -55 % delay at +4 % area. The remaining path is still 3 comparators deep. All-pairs comparison is 1 comparator level plus an AND and a one-hot mux, but 28 comparators may not fit the 20 % area budget.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "All-pairs comparison: lane i wins if >= every lower lane and > every higher lane; one-hot AND-OR output mux.",
+        "rtl_file": "02_all_pairs_compare.sv"}}]
+    },
+    {
+      "text": "As feared: -70 % delay but 2x the area. Middle ground: one tree level (4 comparators) then all-pairs on the 4 survivors (6 comparators), so 2 comparator levels instead of 3.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "Hybrid: pairwise level, then all-pairs over the 4 survivors.",
+        "rtl_file": "03_pairs_then_allpairs4.sv"}}]
+    },
+    {
+      "text": "-61 % delay, but area is 1.238x, just over 1.2x. If Yosys is building both a>b and b>=a for each pair, one comparator per pair would recover the area.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "Hybrid with exactly one comparator per survivor pair; the opposite relation is its negation.",
+        "rtl_file": "04_allpairs4_one_comparator_per_pair.sv"}}]
+    },
+    {
+      "text": "Same area, so Yosys had already shared the comparators; the overhead is in the one-hot muxing. Within a 20 % area budget the tournament tree is the best I can find.",
+      "tool_calls": [{"name": "finish", "input": {
+        "summary": "Tournament tree: -55 % delay at +4 % area, proven equivalent. Faster structures exist (all-pairs: -70 % delay; hybrid: -61 % to -65 %), but they need 1.24x to 2x the area, outside the spec's 1.2x budget. They are on the Pareto front if the budget changes."}}]
+    }
+  ]
+}

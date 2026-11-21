@@ -1,0 +1,143 @@
+{
+  "pareto": [
+    {
+      "n": 1,
+      "area_um2": 11119.41,
+      "delay_ps": 8477.0
+    },
+    {
+      "n": 3,
+      "area_um2": 11418.45,
+      "delay_ps": 8109.2
+    }
+  ],
+  "bench": "dual_mac",
+  "objective": "area",
+  "baseline": {
+    "area_um2": 19457.41,
+    "cells": 2868,
+    "flops": 41,
+    "delay_ps": 9230.1,
+    "cell_mix": {
+      "nand2_1": 538,
+      "xnor2_1": 452,
+      "nor2_1": 297,
+      "xor2_1": 266,
+      "o21ai_0": 143,
+      "maj3_1": 132,
+      "a21oi_1": 113,
+      "a22o_1": 74,
+      "nand3_1": 71,
+      "nand4_1": 71,
+      "inv_1": 62,
+      "nor2b_1": 54
+    }
+  },
+  "best": {
+    "area_um2": 11119.41,
+    "cells": 1600,
+    "flops": 41,
+    "delay_ps": 8477.0,
+    "cell_mix": {
+      "xnor2_1": 278,
+      "nor2_1": 260,
+      "nand2_1": 154,
+      "xor2_1": 154,
+      "maj3_1": 89,
+      "o21ai_0": 73,
+      "a21oi_1": 62,
+      "nand2b_1": 61,
+      "clkbuf_1": 60,
+      "nor3_1": 54,
+      "dfrtp_1": 41,
+      "o22ai_1": 37
+    }
+  },
+  "best_attempt": 1,
+  "best_lec": "PROVEN",
+  "improvement_%": 42.9,
+  "attempts": [
+    {
+      "n": 1,
+      "rationale": "Operand-level resource sharing: (sel ? a : c) * (sel ? b : d) instead of muxing two products.",
+      "verdict": "accepted",
+      "gates": {
+        "interface": "PASS",
+        "lint": "PASS",
+        "sim": "PASS",
+        "lec": "PASS PROVEN"
+      },
+      "ppa": {
+        "area_um2": 11119.41,
+        "cells": 1600,
+        "flops": 41,
+        "delay_ps": 8477.0,
+        "cell_mix": {
+          "xnor2_1": 278,
+          "nor2_1": 260,
+          "nand2_1": 154,
+          "xor2_1": 154,
+          "maj3_1": 89,
+          "o21ai_0": 73,
+          "a21oi_1": 62,
+          "nand2b_1": 61,
+          "clkbuf_1": 60,
+          "nor3_1": 54,
+          "dfrtp_1": 41,
+          "o22ai_1": 37
+        }
+      },
+      "seconds": 139.8
+    },
+    {
+      "n": 2,
+      "rationale": "Drop the async reset from acc (clr already zeroes it); keep it on out_valid.",
+      "verdict": "rejected:lec",
+      "gates": {
+        "interface": "PASS",
+        "lint": "PASS",
+        "sim": "PASS",
+        "lec": "FAIL FAIL"
+      },
+      "ppa": null,
+      "seconds": 7.0
+    },
+    {
+      "n": 3,
+      "rationale": "acc <= (acc & ~clr) + (p & (in_valid & ~clr)): no muxes in front of the accumulator flops.",
+      "verdict": "no-gain",
+      "gates": {
+        "interface": "PASS",
+        "lint": "PASS",
+        "sim": "PASS",
+        "lec": "PASS PROVEN"
+      },
+      "ppa": {
+        "area_um2": 11418.45,
+        "cells": 1655,
+        "flops": 41,
+        "delay_ps": 8109.2,
+        "cell_mix": {
+          "nor2_1": 273,
+          "xnor2_1": 259,
+          "xor2_1": 142,
+          "nand2_1": 133,
+          "a21oi_1": 97,
+          "o21ai_0": 82,
+          "nand2b_1": 71,
+          "nor3_1": 66,
+          "maj3_1": 59,
+          "clkbuf_1": 45,
+          "dfrtp_1": 41,
+          "inv_1": 33
+        }
+      },
+      "seconds": 92.0
+    }
+  ],
+  "summary": "Sharing one multiplier between the two operand pairs is the big win (-43 % area, also faster). Removing the accumulator reset is not legal (acc is observable right after reset; formal caught what simulation missed). Masking instead of muxing did not help.",
+  "tools": {
+    "yosys": "Yosys 0.68+post (git sha1 c12172fbae8af5e20f6fb52e3d4e92d56ed587b6, Release, AppleClang clang++ 21.0.0.21000101)",
+    "verilator": "Verilator 5.050 2026-07-01 rev vUNKNOWN-built20260701"
+  }
+}

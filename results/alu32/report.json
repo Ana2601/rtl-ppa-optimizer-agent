@@ -1,0 +1,306 @@
+{
+  "pareto": [
+    {
+      "n": 5,
+      "area_um2": 2411.06,
+      "delay_ps": 8513.7
+    },
+    {
+      "n": 1,
+      "area_um2": 2472.37,
+      "delay_ps": 7391.3
+    },
+    {
+      "n": 6,
+      "area_um2": 2636.28,
+      "delay_ps": 6375.8
+    },
+    {
+      "n": 0,
+      "area_um2": 2890.27,
+      "delay_ps": 5395.0
+    },
+    {
+      "n": 2,
+      "area_um2": 2941.57,
+      "delay_ps": 5314.7
+    }
+  ],
+  "bench": "alu32",
+  "objective": "area",
+  "baseline": {
+    "area_um2": 2890.27,
+    "cells": 493,
+    "flops": 0,
+    "delay_ps": 5395.0,
+    "cell_mix": {
+      "nand2_1": 61,
+      "a21oi_1": 57,
+      "o21ai_0": 56,
+      "nor2_1": 43,
+      "xnor2_1": 28,
+      "o22ai_1": 18,
+      "inv_1": 17,
+      "xor2_1": 16,
+      "nand2b_1": 15,
+      "nand3_1": 15,
+      "a31oi_1": 14,
+      "nor2b_1": 13
+    }
+  },
+  "best": {
+    "area_um2": 2890.27,
+    "cells": 493,
+    "flops": 0,
+    "delay_ps": 5395.0,
+    "cell_mix": {
+      "nand2_1": 61,
+      "a21oi_1": 57,
+      "o21ai_0": 56,
+      "nor2_1": 43,
+      "xnor2_1": 28,
+      "o22ai_1": 18,
+      "inv_1": 17,
+      "xor2_1": 16,
+      "nand2b_1": 15,
+      "nand3_1": 15,
+      "a31oi_1": 14,
+      "nor2b_1": 13
+    }
+  },
+  "best_attempt": 0,
+  "best_lec": "-",
+  "improvement_%": 0.0,
+  "attempts": [
+    {
+      "n": 1,
+      "rationale": "One shared 33-bit adder/subtractor for ADD/SUB/SLT/SLTU; flags from carry and sign.",
+      "verdict": "constraint",
+      "gates": {
+        "interface": "PASS",
+        "lint": "PASS",
+        "sim": "PASS",
+        "lec": "PASS PROVEN"
+      },
+      "ppa": {
+        "area_um2": 2472.37,
+        "cells": 387,
+        "flops": 0,
+        "delay_ps": 7391.3,
+        "cell_mix": {
+          "xnor2_1": 70,
+          "o21ai_0": 67,
+          "nand2_1": 56,
+          "xor2_1": 38,
+          "a31oi_1": 24,
+          "nor2_1": 24,
+          "clkbuf_1": 13,
+          "maj3_2": 11,
+          "nand3_1": 10,
+          "a21oi_1": 9,
+          "nand4_1": 9,
+          "a21oi_2": 8
+        }
+      },
+      "seconds": 6.4
+    },
+    {
+      "n": 2,
+      "rationale": "Compute a == b as ~|(a ^ b), sharing the XOR array with the XOR op.",
+      "verdict": "no-gain",
+      "gates": {
+        "interface": "PASS",
+        "lint": "PASS",
+        "sim": "PASS",
+        "lec": "PASS PROVEN"
+      },
+      "ppa": {
+        "area_um2": 2941.57,
+        "cells": 494,
+        "flops": 0,
+        "delay_ps": 5314.7,
+        "cell_mix": {
+          "a21oi_1": 59,
+          "o21ai_0": 57,
+          "nand2_1": 53,
+          "nor2_1": 41,
+          "xnor2_1": 20,
+          "inv_1": 18,
+          "nor2b_1": 16,
+          "o22ai_1": 16,
+          "a21oi_2": 15,
+          "nand3_1": 15,
+          "xor2_1": 15,
+          "clkbuf_1": 14
+        }
+      },
+      "seconds": 629.8
+    },
+    {
+      "n": 3,
+      "rationale": "Dedicated adder for ADD; one 33-bit subtractor shared by SUB, SLT, SLTU.",
+      "verdict": "constraint",
+      "gates": {
+        "interface": "PASS",
+        "lint": "PASS",
+        "sim": "PASS",
+        "lec": "PASS PROVEN"
+      },
+      "ppa": {
+        "area_um2": 2941.57,
+        "cells": 486,
+        "flops": 0,
+        "delay_ps": 5722.6,
+        "cell_mix": {
+          "a21oi_1": 67,
+          "nand2_1": 63,
+          "nor2_1": 50,
+          "o21ai_0": 45,
+          "xnor2_1": 21,
+          "nand3_1": 17,
+          "inv_1": 16,
+          "nor3_1": 16,
+          "nand2b_1": 14,
+          "clkbuf_1": 12,
+          "nor2b_1": 10,
+          "xor2_1": 10
+        }
+      },
+      "seconds": 7.9
+    },
+    {
+      "n": 4,
+      "rationale": "Shared adder with the carry-in folded in: {1'b0,a,1'b1} + {1'b0,b^sub,sub}.",
+      "verdict": "rejected:lint",
+      "gates": {
+        "interface": "PASS",
+        "lint": "FAIL"
+      },
+      "ppa": null,
+      "seconds": 0.1
+    },
+    {
+      "n": 5,
+      "rationale": "Same as previous, with t[0] explicitly consumed by an unused_ signal.",
+      "verdict": "constraint",
+      "gates": {
+        "interface": "PASS",
+        "lint": "PASS",
+        "sim": "PASS",
+        "lec": "PASS PROVEN"
+      },
+      "ppa": {
+        "area_um2": 2411.06,
+        "cells": 355,
+        "flops": 0,
+        "delay_ps": 8513.7,
+        "cell_mix": {
+          "xnor2_1": 91,
+          "o21ai_0": 65,
+          "a31oi_1": 29,
+          "nor2_1": 24,
+          "xor2_1": 21,
+          "nand2_1": 18,
+          "maj3_2": 15,
+          "clkbuf_1": 14,
+          "a21oi_1": 10,
+          "o211ai_1": 10,
+          "nand4_1": 7,
+          "o31ai_1": 5
+        }
+      },
+      "seconds": 6.7
+    },
+    {
+      "n": 6,
+      "rationale": "Shared adder/subtractor as a 2 x 16-bit carry-select adder.",
+      "verdict": "constraint",
+      "gates": {
+        "interface": "PASS",
+        "lint": "PASS",
+        "sim": "PASS",
+        "lec": "PASS PROVEN"
+      },
+      "ppa": {
+        "area_um2": 2636.28,
+        "cells": 374,
+        "flops": 0,
+        "delay_ps": 6375.8,
+        "cell_mix": {
+          "xnor2_1": 81,
+          "xor2_1": 44,
+          "o21ai_0": 28,
+          "nor2_1": 26,
+          "nand2_1": 21,
+          "a21oi_1": 20,
+          "maj3_2": 20,
+          "o211ai_1": 20,
+          "a31oi_1": 17,
+          "nand3_1": 17,
+          "clkbuf_1": 13,
+          "nand4_1": 8
+        }
+      },
+      "seconds": 6.8
+    },
+    {
+      "n": 7,
+      "rationale": "Shared adder/subtractor as a 4 x 8-bit carry-select adder.",
+      "verdict": "rejected:lint",
+      "gates": {
+        "interface": "PASS",
+        "lint": "FAIL"
+      },
+      "ppa": null,
+      "seconds": 0.1
+    },
+    {
+      "n": 8,
+      "rationale": "Same 4 x 8-bit carry-select, with the block carries as explicit assigns.",
+      "verdict": "rejected:lint",
+      "gates": {
+        "interface": "PASS",
+        "lint": "FAIL"
+      },
+      "ppa": null,
+      "seconds": 0.1
+    },
+    {
+      "n": 9,
+      "rationale": "Same as previous, without the unused c[0].",
+      "verdict": "constraint",
+      "gates": {
+        "interface": "PASS",
+        "lint": "PASS",
+        "sim": "PASS",
+        "lec": "PASS PROVEN"
+      },
+      "ppa": {
+        "area_um2": 2707.6,
+        "cells": 410,
+        "flops": 0,
+        "delay_ps": 6454.0,
+        "cell_mix": {
+          "xnor2_1": 74,
+          "o21ai_0": 56,
+          "nand2_1": 51,
+          "xor2_1": 45,
+          "maj3_1": 20,
+          "nand3_1": 20,
+          "nor2_1": 20,
+          "a31oi_1": 15,
+          "nand4_1": 14,
+          "a21oi_1": 12,
+          "clkbuf_1": 12,
+          "and2_1": 6
+        }
+      },
+      "seconds": 6.3
+    }
+  ],
+  "summary": "No candidate met the 5 % delay budget, so the original stands. Yosys already shares the compare logic with the subtractor and the equality with the XOR. Sharing ADD and SUB in one adder buys area at a large delay cost; Pareto points measured: -9 % area at +18 % delay (16-bit carry-select), -14 % at +37 %, -17 % at +58 %.",
+  "tools": {
+    "yosys": "Yosys 0.68+post (git sha1 c12172fbae8af5e20f6fb52e3d4e92d56ed587b6, Release, AppleClang clang++ 21.0.0.21000101)",
+    "verilator": "Verilator 5.050 2026-07-01 rev vUNKNOWN-built20260701"
+  }
+}

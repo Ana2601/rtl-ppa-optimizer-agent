@@ -1,0 +1,6 @@
+{
+  "top": "alu32",
+  "objective": "area",
+  "max_delay_ratio": 1.05,
+  "clock": null
+}

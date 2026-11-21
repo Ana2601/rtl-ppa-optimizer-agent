@@ -1,0 +1,29 @@
+{
+  "model": "claude (interactive, during development)",
+  "note": "Proposals only. Every verdict is recomputed by the tools on replay.",
+  "steps": [
+    {
+      "text": "Two full 16x16 multipliers are built and one product is thrown away every cycle. Selecting the operands instead of the products needs one multiplier and two 16-bit muxes, which should roughly halve the area.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "Operand-level resource sharing: (sel ? a : c) * (sel ? b : d) instead of muxing two products.",
+        "rtl_file": "01_share_multiplier.sv"}}]
+    },
+    {
+      "text": "Accepted, -43 % area and faster. The 40 accumulator flops are async-reset; clr already zeroes the accumulator, so the reset may be redundant.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "Drop the async reset from acc (clr already zeroes it); keep it on out_valid.",
+        "rtl_file": "02_drop_acc_reset.sv"}}]
+    },
+    {
+      "text": "Rejected by equivalence, and rightly so: the spec says acc is 0 after reset and it is visible every cycle; the counterexample shows power-up garbage on acc. The testbench missed it because the simulator zero-initialises registers. Keeping the reset. Last idea: replace the clr / hold muxes in front of the flops with operand masking into the one adder.",
+      "tool_calls": [{"name": "evaluate_candidate", "input": {
+        "rationale": "acc <= (acc & ~clr) + (p & (in_valid & ~clr)): no muxes in front of the accumulator flops.",
+        "rtl_file": "03_mask_instead_of_mux.sv"}}]
+    },
+    {
+      "text": "Slightly larger: the AND masks cost more than the muxes they replace. Stopping.",
+      "tool_calls": [{"name": "finish", "input": {
+        "summary": "Sharing one multiplier between the two operand pairs is the big win (-43 % area, also faster). Removing the accumulator reset is not legal (acc is observable right after reset; formal caught what simulation missed). Masking instead of muxing did not help."}}]
+    }
+  ]
+}

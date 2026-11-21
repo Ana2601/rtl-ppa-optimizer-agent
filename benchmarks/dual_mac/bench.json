@@ -1,0 +1,11 @@
+{
+  "top": "dual_mac",
+  "objective": "area",
+  "max_delay_ratio": 1.10,
+  "clock": "clk",
+  "reset": "rst_n",
+  "reset_active": 0,
+  "lec_depth": 12,
+  "lec_prove_s": 180,
+  "lec_params": {"W": 6, "ACC_W": 16}
+}
